@@ -55,7 +55,17 @@ def spambase():
 
     return test(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
 
+def merge_data(featuresTrain, labelsTrain, featuresTest, labelsTest):
+    features = np.vstack((featuresTrain, featuresTest))
+    labels = np.vstack((labelsTrain, labelsTest))
+
+    return (features, labels)
+
 if __name__ == "__main__":
     # yalefaces()
-    print(spambase())
+    # print(spambase())
+    mat = read_data('datasets/spambase.mat')
+    a = merge_data(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
+    print(a[0].shape, a[1].shape)
+
     
