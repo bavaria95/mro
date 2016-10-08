@@ -20,6 +20,16 @@ def scale_feature(x, feature_number, k):
     y[:, feature_number] *= k
     return y
 
+def test(featuresTrain, labelsTrain, featuresTest, labelsTest):
+    misclassified = 0
+    for i in range(featuresTest.shape[0]):
+        predicted = knn(featuresTrain, featuresTest[i], labelsTrain)
+        actual = labelsTest[i]
+        if actual != predicted:
+            misclassified += 1
+
+    return float(misclassified) / labelsTest.shape[0]
+
 def yalefaces():
     mat = read_data('datasets/facesYale.mat')
     x, y = [], []
@@ -28,16 +38,11 @@ def yalefaces():
         featuresTrain = scale_feature(mat['featuresTrain'], 9, alpha)
         featuresTest = scale_feature(mat['featuresTest'], 9, alpha)
 
-        misclassified = 0
-        for i in range(featuresTest.shape[0]):
-            predicted = knn(featuresTrain, featuresTest[i], mat['personTrain'])
-            actual = mat['personTest'][i]
-            if actual == predicted:
-                misclassified += 1
+        error = test(featuresTrain, mat['personTrain'], featuresTest, mat['personTest'])
 
-        print("alpha = %s. error = %s" % (alpha, 100.0 - 100 * float(correctly_classified) / mat['personTest'].shape[0]))
+        print("alpha = %s. error = %s" % (alpha, error))
         x.append(alpha)
-        y.append(100*float(misclassified) / mat['personTest'].shape[0])
+        y.append(error * 100)
 
     plt.plot(x, y)
     plt.title('Dependence of error from scaling the last feature')
@@ -48,17 +53,9 @@ def yalefaces():
 def spambase():
     mat = read_data('datasets/spambase.mat')
 
-    misclassified = 0
-    for i in range(mat['featuresTest'].shape[0]):
-        predicted = knn(mat['featuresTrain'], mat['featuresTest'][i], mat['classesTrain'])
-        actual = mat['classesTest'][i]
-        if actual != predicted:
-            misclassified += 1
-
-    print(100.0 * float(misclassified) / mat['classesTest'].shape[0])
-
+    return test(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
 
 if __name__ == "__main__":
     # yalefaces()
-    spambase()
+    print(spambase())
     
