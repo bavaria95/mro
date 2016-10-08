@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.io
+import matplotlib.pyplot as plt
 
 def read_yale():
     return scipy.io.loadmat('datasets/facesYale.mat')
@@ -21,6 +22,7 @@ def scale_feature(x, feature_number, k):
 
 if __name__ == "__main__":
     mat = read_yale()
+    x, y = [], []
 
     for alpha in range(1, 21):
         featuresTrain = scale_feature(mat['featuresTrain'], 9, alpha)
@@ -34,3 +36,11 @@ if __name__ == "__main__":
                 correctly_classified += 1
 
         print("alpha = %s. acc = %s" % (alpha, float(correctly_classified) / mat['personTest'].shape[0]))
+        x.append(alpha)
+        y.append(float(correctly_classified) / mat['personTest'].shape[0])
+
+    plt.plot(x, y)
+    plt.title('Dependence of accuracy from scaling the last feature')
+    plt.xlabel(r'$\alpha$')
+    plt.ylabel('accuracy')
+    plt.show()
