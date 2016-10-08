@@ -65,6 +65,9 @@ def shuffle(features, labels):
     ind = np.random.permutation(np.arange(features.shape[0]))
     return (features[ind], labels[ind])
 
+def split_dataset(features, labels, k):
+    return (np.array_split(features, k), np.array_split(labels, k))
+
 if __name__ == "__main__":
     # yalefaces()
     # print(spambase())
