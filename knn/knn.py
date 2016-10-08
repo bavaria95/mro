@@ -99,9 +99,9 @@ def cubes():
     maxDim = mat['maxDim'][0][0]
 
     errors = []
-    for i in range(maxDim):
-        error = test(mat['featuresTrain'][0][i], mat['classesTrain'][0][i],
-                     mat['featuresTest'][0][i], mat['classesTest'][0][i])
+    for k in range(maxDim):
+        error = test(mat['featuresTrain'][0][k], mat['classesTrain'][0][k],
+                     mat['featuresTest'][0][k], mat['classesTest'][0][k])
 
         errors.append(error)
 
@@ -113,9 +113,44 @@ def cubes():
     plt.ylabel('error, [%]')
     plt.show()
 
+def cubes_2():
+    mat = read_data('datasets/multiDimHypercubes.mat')
+    maxDim = mat['maxDim'][0][0]
+
+    k = 0
+    featuresTrain = mat['featuresTrain'][0][k]
+    classesTrain = mat['classesTrain'][0][k]
+    featuresTest = mat['featuresTest'][0][k]
+    classesTest = mat['classesTest'][0][k]
+
+    for i in range(featuresTest.shape[0]):
+        min_dist_to_the_same_class = []
+        min_dist_to_the_diff_class = []
+
+        label = classesTest[i]
+
+        same_class_features = featuresTrain[np.where(classesTrain == label)]
+        min_dist = 10**8
+        for train_ex in same_class_features:
+            min_dist = min(min_dist, dist(train_ex, featuresTest[i]))
+        min_dist_to_the_same_class.append(min_dist)
+
+        diff_class_features = featuresTrain[np.where(classesTrain != label)]
+        min_dist = 10**8
+        for train_ex in diff_class_features:
+            min_dist = min(min_dist, dist(train_ex, featuresTest[i]))
+        min_dist_to_the_diff_class.append(min_dist)
+
+    print(sum(min_dist_to_the_same_class) / len(min_dist_to_the_same_class))
+    print(sum(min_dist_to_the_diff_class) / len(min_dist_to_the_diff_class))
+
+
+
+
 if __name__ == "__main__":
     # yalefaces()
     # print(spambase())
     # spambase_cross_validation()
-    cubes()
+    # cubes()
+    cubes_2()
 
