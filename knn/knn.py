@@ -117,34 +117,42 @@ def cubes_2():
     mat = read_data('datasets/multiDimHypercubes.mat')
     maxDim = mat['maxDim'][0][0]
 
-    k = 0
-    featuresTrain = mat['featuresTrain'][0][k]
-    classesTrain = mat['classesTrain'][0][k]
-    featuresTest = mat['featuresTest'][0][k]
-    classesTest = mat['classesTest'][0][k]
+    y = []
+    for k in range(maxDim):
+        featuresTrain = mat['featuresTrain'][0][k]
+        classesTrain = mat['classesTrain'][0][k]
+        featuresTest = mat['featuresTest'][0][k]
+        classesTest = mat['classesTest'][0][k]
 
-    for i in range(featuresTest.shape[0]):
-        min_dist_to_the_same_class = []
-        min_dist_to_the_diff_class = []
+        for i in range(featuresTest.shape[0]):
+            min_dist_to_the_same_class = []
+            min_dist_to_the_diff_class = []
 
-        label = classesTest[i]
+            label = classesTest[i]
 
-        same_class_features = featuresTrain[np.where(classesTrain == label)]
-        min_dist = 10**8
-        for train_ex in same_class_features:
-            min_dist = min(min_dist, dist(train_ex, featuresTest[i]))
-        min_dist_to_the_same_class.append(min_dist)
+            same_class_features = featuresTrain[np.where(classesTrain == label)]
+            min_dist = 10**8
+            for train_ex in same_class_features:
+                min_dist = min(min_dist, dist(train_ex, featuresTest[i]))
+            min_dist_to_the_same_class.append(min_dist)
 
-        diff_class_features = featuresTrain[np.where(classesTrain != label)]
-        min_dist = 10**8
-        for train_ex in diff_class_features:
-            min_dist = min(min_dist, dist(train_ex, featuresTest[i]))
-        min_dist_to_the_diff_class.append(min_dist)
+            diff_class_features = featuresTrain[np.where(classesTrain != label)]
+            min_dist = 10**8
+            for train_ex in diff_class_features:
+                min_dist = min(min_dist, dist(train_ex, featuresTest[i]))
+            min_dist_to_the_diff_class.append(min_dist)
 
-    print(sum(min_dist_to_the_same_class) / len(min_dist_to_the_same_class))
-    print(sum(min_dist_to_the_diff_class) / len(min_dist_to_the_diff_class))
+        avg_same = sum(min_dist_to_the_same_class) / len(min_dist_to_the_same_class)
+        avg_diff = sum(min_dist_to_the_diff_class) / len(min_dist_to_the_diff_class)
 
+        y.append(avg_same / avg_diff)
 
+    x = range(1, maxDim + 1)
+
+    plt.plot(x, y)
+    plt.xlabel('i')
+    plt.ylabel('fraction of averages')
+    plt.show()
 
 
 if __name__ == "__main__":
