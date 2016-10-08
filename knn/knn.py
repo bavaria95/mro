@@ -102,10 +102,16 @@ def cubes():
     for i in range(maxDim):
         error = test(mat['featuresTrain'][0][i], mat['classesTrain'][0][i],
                      mat['featuresTest'][0][i], mat['classesTest'][0][i])
-        print(error)
+
         errors.append(error)
 
-    print(errors)
+    errors = np.array(errors) * 100
+
+    plt.plot(range(1, maxDim + 1), errors)
+    plt.title('Dependence of error from number of hypercube dimensions')
+    plt.xlabel('i')
+    plt.ylabel('error, [%]')
+    plt.show()
 
 if __name__ == "__main__":
     # yalefaces()
