@@ -61,11 +61,17 @@ def merge_data(featuresTrain, labelsTrain, featuresTest, labelsTest):
 
     return (features, labels)
 
+def shuffle(features, labels):
+    ind = np.random.permutation(np.arange(features.shape[0]))
+    return (features[ind], labels[ind])
+
 if __name__ == "__main__":
     # yalefaces()
     # print(spambase())
     mat = read_data('datasets/spambase.mat')
-    a = merge_data(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
-    print(a[0].shape, a[1].shape)
+    features, labels = merge_data(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
+    print(features[0], labels[0])
+    features, labels = shuffle(features, labels)
+    print(features[0], labels[0])
 
     
