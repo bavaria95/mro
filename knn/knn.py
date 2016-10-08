@@ -20,10 +20,10 @@ def scale_feature(x, feature_number, k):
     y[:, feature_number] *= k
     return y
 
-def test(featuresTrain, labelsTrain, featuresTest, labelsTest):
+def test(featuresTrain, labelsTrain, featuresTest, labelsTest, k=1):
     misclassified = 0
     for i in range(featuresTest.shape[0]):
-        predicted = knn(featuresTrain, featuresTest[i], labelsTrain)
+        predicted = knn(featuresTrain, featuresTest[i], labelsTrain, k)
         actual = labelsTest[i]
         if actual != predicted:
             misclassified += 1
@@ -87,13 +87,29 @@ def cross_validation(features, labels, k):
 
     return total_error / k
         
+def spambase_cross_validation():
+    mat = read_data('datasets/spambase.mat')
+
+    for i in range(10):
+        features, labels = merge_data(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
+        print(cross_validation(features, labels, 5))
+
+def cubes():
+    mat = read_data('datasets/multiDimHypercubes.mat')
+    maxDim = mat['maxDim'][0][0]
+
+    errors = []
+    for i in range(maxDim):
+        error = test(mat['featuresTrain'][0][i], mat['classesTrain'][0][i],
+                     mat['featuresTest'][0][i], mat['classesTest'][0][i])
+        print(error)
+        errors.append(error)
+
+    print(errors)
 
 if __name__ == "__main__":
     # yalefaces()
     # print(spambase())
-    mat = read_data('datasets/spambase.mat')
+    # spambase_cross_validation()
+    cubes()
 
-    features, labels = merge_data(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
-    cross_validation(features, labels, 5)
-
-    
