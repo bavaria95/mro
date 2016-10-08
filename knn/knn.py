@@ -35,12 +35,12 @@ if __name__ == "__main__":
             if actual == predicted:
                 correctly_classified += 1
 
-        print("alpha = %s. acc = %s" % (alpha, float(correctly_classified) / mat['personTest'].shape[0]))
+        print("alpha = %s. error = %s" % (alpha, 100.0 - 100*float(correctly_classified) / mat['personTest'].shape[0]))
         x.append(alpha)
-        y.append(float(correctly_classified) / mat['personTest'].shape[0])
+        y.append(100.0 - 100*float(correctly_classified) / mat['personTest'].shape[0])
 
     plt.plot(x, y)
-    plt.title('Dependence of accuracy from scaling the last feature')
+    plt.title('Dependence of error from scaling the last feature')
     plt.xlabel(r'$\alpha$')
-    plt.ylabel('accuracy')
+    plt.ylabel('error, [%]')
     plt.show()
