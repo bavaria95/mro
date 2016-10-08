@@ -66,15 +66,34 @@ def shuffle(features, labels):
     return (features[ind], labels[ind])
 
 def split_dataset(features, labels, k):
-    return (np.array_split(features, k), np.array_split(labels, k))
+    return (np.array(np.array_split(features, k)),
+            np.array(np.array_split(labels, k)))
+
+def cross_validation(features, labels, k):
+    features, labels = shuffle(features, labels)
+    features_split, labels_split = split_dataset(features, labels, k)
+
+    total_error = 0
+    for i in range(k):
+        featuresTest = features_split[i]
+        labelsTest = labels_split[i]
+
+        chunks_to_merge = np.delete(np.arange(k), i)
+        featuresTrain = np.vstack(features_split[chunks_to_merge])
+        labelsTrain = np.vstack(labels_split[chunks_to_merge])
+
+        error = test(featuresTrain, labelsTrain, featuresTest, labelsTest)
+        total_error += error
+
+    return total_error / k
+        
 
 if __name__ == "__main__":
     # yalefaces()
     # print(spambase())
     mat = read_data('datasets/spambase.mat')
+
     features, labels = merge_data(mat['featuresTrain'], mat['classesTrain'], mat['featuresTest'], mat['classesTest'])
-    print(features[0], labels[0])
-    features, labels = shuffle(features, labels)
-    print(features[0], labels[0])
+    cross_validation(features, labels, 5)
 
     
