@@ -2,8 +2,8 @@ import numpy as np
 import scipy.io
 import matplotlib.pyplot as plt
 
-def read_yale():
-    return scipy.io.loadmat('datasets/facesYale.mat')
+def read_data(filename):
+    return scipy.io.loadmat(filename)
 
 def dist(a, b):
     return np.linalg.norm(a - b)
@@ -20,27 +20,45 @@ def scale_feature(x, feature_number, k):
     y[:, feature_number] *= k
     return y
 
-if __name__ == "__main__":
-    mat = read_yale()
+def yalefaces():
+    mat = read_data('datasets/facesYale.mat')
     x, y = [], []
 
     for alpha in range(1, 21):
         featuresTrain = scale_feature(mat['featuresTrain'], 9, alpha)
         featuresTest = scale_feature(mat['featuresTest'], 9, alpha)
 
-        correctly_classified = 0
+        misclassified = 0
         for i in range(featuresTest.shape[0]):
-            predicted = knn(featuresTrain, featuresTest[i], mat['personTrain'], 1)
+            predicted = knn(featuresTrain, featuresTest[i], mat['personTrain'])
             actual = mat['personTest'][i]
             if actual == predicted:
-                correctly_classified += 1
+                misclassified += 1
 
-        print("alpha = %s. error = %s" % (alpha, 100.0 - 100*float(correctly_classified) / mat['personTest'].shape[0]))
+        print("alpha = %s. error = %s" % (alpha, 100.0 - 100 * float(correctly_classified) / mat['personTest'].shape[0]))
         x.append(alpha)
-        y.append(100.0 - 100*float(correctly_classified) / mat['personTest'].shape[0])
+        y.append(100*float(misclassified) / mat['personTest'].shape[0])
 
     plt.plot(x, y)
     plt.title('Dependence of error from scaling the last feature')
     plt.xlabel(r'$\alpha$')
     plt.ylabel('error, [%]')
     plt.show()
+
+def spambase():
+    mat = read_data('datasets/spambase.mat')
+
+    misclassified = 0
+    for i in range(mat['featuresTest'].shape[0]):
+        predicted = knn(mat['featuresTrain'], mat['featuresTest'][i], mat['classesTrain'])
+        actual = mat['classesTest'][i]
+        if actual != predicted:
+            misclassified += 1
+
+    print(100.0 * float(misclassified) / mat['classesTest'].shape[0])
+
+
+if __name__ == "__main__":
+    # yalefaces()
+    spambase()
+    
