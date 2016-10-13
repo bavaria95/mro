@@ -144,7 +144,7 @@ def cubes_2():
 
         avg_same = sum(min_dist_to_the_same_class) / len(min_dist_to_the_same_class)
         avg_diff = sum(min_dist_to_the_diff_class) / len(min_dist_to_the_diff_class)
-
+        print(avg_same / avg_diff)
         y.append(avg_same / avg_diff)
 
     x = range(1, maxDim + 1)
