@@ -33,20 +33,20 @@ def read_data(filename):
     return scipy.io.loadmat(filename)
 
 def show_similar_faces(data_plain, assigned, k):
-    N = 400
+    N = 512
     for i in range(k):
         im = np.ones((N, N))
         x, y = 0, 0
-        for face in data_plain[np.where(assigned==i)[0]]:
-            if x + face.shape[0] >= N:
+        for f in data_plain[np.where(assigned==i)[0]]:
+            face = cv2.resize(f, (0, 0), fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+            if x + face.shape[0] > N:
                 x = 0
                 y += face.shape[1]
 
             im[y:y+face.shape[1], x:x+face.shape[0]] = face
             x = x + face.shape[0]
 
-        cv2.imshow(str(i), im)
-        cv2.waitKey(0)
+        cv2.imwrite("faces/%s.jpg" % i, im*255.0)
 
 def main():
     mat = read_data('datasets/facesYale.mat')
