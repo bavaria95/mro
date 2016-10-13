@@ -1,5 +1,6 @@
 import scipy.io
 import numpy as np
+import cv2
 
 def dist(a, b):
     return np.linalg.norm(a - b)
@@ -28,9 +29,38 @@ def kmeans(data, k):
 
     return centroids
 
-def main():
-    data = np.array([[1, 1], [1, 2], [2, 1], [2, 2], [4, 4], [4, 5], [5, 4], [5, 5]])
+def read_data(filename):
+    return scipy.io.loadmat(filename)
 
-    print(kmeans(data, 1))
+def show_similar_faces(data_plain, assigned, k):
+    N = 400
+    for i in range(k):
+        im = np.ones((N, N))
+        x, y = 0, 0
+        for face in data_plain[np.where(assigned==i)[0]]:
+            if x + face.shape[0] >= N:
+                x = 0
+                y += face.shape[1]
+
+            im[y:y+face.shape[1], x:x+face.shape[0]] = face
+            x = x + face.shape[0]
+
+        cv2.imshow(str(i), im)
+        cv2.waitKey(0)
+
+def main():
+    mat = read_data('datasets/facesYale.mat')
+    data = np.concatenate((mat['featuresTrain'], mat['featuresTest']))
+    facesTrain = mat['facesTrain']
+    facesTrain = np.array([facesTrain[:, :, i] for i in range(facesTrain.shape[2])])
+    facesTest = mat['facesTest']
+    facesTest = np.array([facesTest[:, :, i] for i in range(facesTest.shape[2])])
+    data_plain = np.concatenate((facesTrain, facesTest))
+    k = 10
+
+    centroids = kmeans(data, k)
+    a = assign_centroids(data, centroids)
+
+    show_similar_faces(data_plain, a, k)
 
 main()
