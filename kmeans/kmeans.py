@@ -6,15 +6,16 @@ import scipy.spatial.distance
 def dist(a, b):
     return np.linalg.norm(a - b)
 
-def mahalanobis_dist(u, v, data):
-    vi = np.linalg.inv(np.cov(data.T))
-    return scipy.spatial.distance.mahalanobis(u, v, vi)
+# def mahalanobis_dist(u, v, data):
+#     vi = np.linalg.inv(np.cov(data.T))
+#     return scipy.spatial.distance.mahalanobis(u, v, vi)
 
-def closest_centroid(point, centroids, data):
-    return np.argmin([mahalanobis_dist(point, x, data) for x in centroids])
+def closest_centroid(point, centroids):
+    # kd-tree
+    return np.argmin([dist(point, x) for x in centroids])
 
 def assign_centroids(data, centroids):
-    return np.array([closest_centroid(point, centroids, data) for point in data])
+    return np.array([closest_centroid(point, centroids) for point in data])
 
 def init_centroids(data, k):
     return data[np.random.choice(data.shape[0], k, replace=False)]
