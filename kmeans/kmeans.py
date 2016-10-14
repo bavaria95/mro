@@ -2,6 +2,7 @@ import scipy.io
 import numpy as np
 import cv2
 import scipy.spatial.distance
+import kd_tree
 
 def dist(a, b):
     return np.linalg.norm(a - b)
@@ -10,12 +11,18 @@ def dist(a, b):
 #     vi = np.linalg.inv(np.cov(data.T))
 #     return scipy.spatial.distance.mahalanobis(u, v, vi)
 
-def closest_centroid(point, centroids):
-    # kd-tree
-    return np.argmin([dist(point, x) for x in centroids])
+# def closest_centroid(point, centroids):
+#     return np.argmin([dist(point, x) for x in centroids])
+
+def closest_centroid_tree(tree, point, centroids):
+    return np.where(centroids==kd_tree.get_nearest(tree, point, centroids.shape[1], dist))[0][0]
 
 def assign_centroids(data, centroids):
-    return np.array([closest_centroid(point, centroids) for point in data])
+    # return np.array([closest_centroid(point, centroids) for point in data])
+
+    tree = kd_tree.make_kd_tree(centroids, centroids.shape[1])
+    assigned = np.array([closest_centroid_tree(tree, point, centroids) for point in data])
+    return assigned
 
 def init_centroids(data, k):
     return data[np.random.choice(data.shape[0], k, replace=False)]
