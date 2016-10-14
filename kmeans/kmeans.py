@@ -1,21 +1,23 @@
 import scipy.io
 import numpy as np
 import cv2
+import scipy.spatial.distance
 
 def dist(a, b):
     return np.linalg.norm(a - b)
 
-def closest_centroid(point, centroids):
-    return np.argmin([dist(point, x) for x in centroids])
+def mahalanobis_dist(u, v, data):
+    vi = np.linalg.inv(np.cov(data.T))
+    return scipy.spatial.distance.mahalanobis(u, v, vi)
+
+def closest_centroid(point, centroids, data):
+    return np.argmin([mahalanobis_dist(point, x, data) for x in centroids])
 
 def assign_centroids(data, centroids):
-    return np.array([closest_centroid(point, centroids) for point in data])
+    return np.array([closest_centroid(point, centroids, data) for point in data])
 
 def init_centroids(data, k):
     return data[np.random.choice(data.shape[0], k, replace=False)]
-
-def update_centroids(data, centroids):
-    pass
 
 def kmeans(data, k):
     centroids = init_centroids(data, k)
@@ -33,7 +35,7 @@ def read_data(filename):
     return scipy.io.loadmat(filename)
 
 def show_similar_faces(data_plain, assigned, k):
-    N = 512
+    N = 640
     for i in range(k):
         im = np.ones((N, N))
         x, y = 0, 0
@@ -46,7 +48,7 @@ def show_similar_faces(data_plain, assigned, k):
             im[y:y+face.shape[1], x:x+face.shape[0]] = face
             x = x + face.shape[0]
 
-        cv2.imwrite("faces/%s.jpg" % i, im*255.0)
+        cv2.imwrite("faces/%s/%s.jpg" % (k, i), im*255.0)
 
 def main():
     mat = read_data('datasets/facesYale.mat')
