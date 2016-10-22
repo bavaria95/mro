@@ -19,6 +19,8 @@ def display_dendrogram(Z):
     )
     plt.show()
 
+def pearson_correlation(x, y):
+    return abs(pearsonr(x, y)[0])
 
 def main():
     global g
@@ -28,8 +30,8 @@ def main():
     # g = read_graph('datasets/dolphins.gml')
     X = nx.adjacency_matrix(g).toarray()
 
-    Z = linkage(X, method='single', metric='euclidean')
-
+    # Z = linkage(X, method='single', metric='euclidean')
+    Z = linkage(X, method='single', metric=pearson_correlation)
     display_dendrogram(Z)
 
 main()
