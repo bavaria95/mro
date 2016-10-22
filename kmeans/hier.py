@@ -22,6 +22,12 @@ def display_dendrogram(Z):
 def pearson_correlation(x, y):
     return abs(pearsonr(x, y)[0])
 
+def shortest_path(x, y):
+    Xp = map(list, list(X))
+    xi = g.nodes()[Xp.index(list(x))]
+    yi = g.nodes()[Xp.index(list(y))]
+    return len(nx.shortest_path(g, xi, yi))
+
 def main():
     global g
     global X
@@ -31,7 +37,8 @@ def main():
     X = nx.adjacency_matrix(g).toarray()
 
     # Z = linkage(X, method='single', metric='euclidean')
-    Z = linkage(X, method='single', metric=pearson_correlation)
+    # Z = linkage(X, method='single', metric=pearson_correlation)
+    Z = linkage(X, method='single', metric=shortest_path)
     display_dendrogram(Z)
 
 main()
