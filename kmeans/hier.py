@@ -31,12 +31,13 @@ def shortest_path(x, y):
 def select_clusters(lnkg):
     Z = map(lambda x: [int(x[0]), int(x[1]), x[2], x[3]], lnkg)
     N = len(X)
+    clusters_on_step = []
     c = [set([i]) for i in range(N)]
 
     for j in range(len(Z)):
         z = Z[j]
         x, y = z[ :2]
-        print(x, y)
+
         if x >= N:
             if c[Z[x - N][0]]:
                 x = Z[x - N][0]
@@ -48,7 +49,7 @@ def select_clusters(lnkg):
                 y = Z[y - N][0]
             else:
                 y = Z[y - N][1]
-        print(x, y)
+
         Z[j][ :2] = x, y
 
         for i in range(len(c)):
@@ -57,12 +58,12 @@ def select_clusters(lnkg):
             if y in c[i]:
                 y_i = i
 
-        print(x_i, y_i)
-
         c[x_i] |= c[y_i]
         c[y_i] = set([])
 
-        print(c)
+        clusters_on_step.append(map(list, filter(None, c)))
+
+    return clusters_on_step
 
 def main():
     global g
@@ -77,6 +78,8 @@ def main():
     Z = linkage(X, method='single', metric=shortest_path)
     # display_dendrogram(Z)
 
-    select_clusters(Z)
+    c = select_clusters(Z)
 
-main()
+
+if __name__ == "__main__":
+    main()

@@ -73,4 +73,6 @@ def main():
 
     show_similar_faces(data_plain, a, k)
 
-main()
+
+if __name__ == "__main__":
+    main()
