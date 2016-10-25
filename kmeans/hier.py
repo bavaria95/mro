@@ -3,6 +3,8 @@ from matplotlib import pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.stats import pearsonr
 import networkx as nx
+import colorsys
+import cv2
 
 def read_graph(path):
     return nx.read_gml(path)
@@ -64,6 +66,24 @@ def select_clusters(lnkg):
         clusters_on_step.append(map(list, filter(None, c)))
 
     return clusters_on_step
+
+def assign_colors(clusters):
+    nodes_color = [[] for i in range(len(X))]
+    n_clusters = len(clusters)
+
+    h = 0
+    for i in range(n_clusters):
+        h += 360.0/n_clusters
+        l = np.random.random()*10 + 50
+        s = np.random.random()*10 + 90
+
+        r, g, b = colorsys.hls_to_rgb(h / 360.0, l/100.0, s/100.0)
+
+        for node in clusters[i]:
+            nodes_color[node] = [r, g, b]
+
+    return nodes_color
+
 
 def main():
     global g
