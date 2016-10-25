@@ -28,6 +28,42 @@ def shortest_path(x, y):
     yi = g.nodes()[Xp.index(list(y))]
     return len(nx.shortest_path(g, xi, yi))
 
+def select_clusters(lnkg):
+    Z = map(lambda x: [int(x[0]), int(x[1]), x[2], x[3]], lnkg)
+    N = len(X)
+    c = [set([i]) for i in range(N)]
+
+    for j in range(len(Z)):
+        z = Z[j]
+        x, y = z[ :2]
+        print(x, y)
+        if x >= N:
+            if c[Z[x - N][0]]:
+                x = Z[x - N][0]
+            else:
+                x = Z[x - N][1]
+            
+        if y >= N:
+            if c[Z[y - N][0]]:
+                y = Z[y - N][0]
+            else:
+                y = Z[y - N][1]
+        print(x, y)
+        Z[j][ :2] = x, y
+
+        for i in range(len(c)):
+            if x in c[i]:
+                x_i = i
+            if y in c[i]:
+                y_i = i
+
+        print(x_i, y_i)
+
+        c[x_i] |= c[y_i]
+        c[y_i] = set([])
+
+        print(c)
+
 def main():
     global g
     global X
@@ -39,6 +75,8 @@ def main():
     # Z = linkage(X, method='single', metric='euclidean')
     # Z = linkage(X, method='single', metric=pearson_correlation)
     Z = linkage(X, method='single', metric=shortest_path)
-    display_dendrogram(Z)
+    # display_dendrogram(Z)
+
+    select_clusters(Z)
 
 main()
