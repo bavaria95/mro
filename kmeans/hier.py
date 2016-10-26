@@ -20,7 +20,7 @@ def display_dendrogram(Z):
         leaf_font_size=8.
     )
     # plt.show()
-    plt.savefig("dendrogram.jpg" % c, format="JPG")
+    plt.savefig("dendrogram.jpg", format="JPG")
 
 def pearson_correlation(x, y):
     return abs(pearsonr(x, y)[0])
@@ -98,7 +98,14 @@ def main():
     Z = linkage(X, method='single', metric='euclidean')
     # Z = linkage(X, method='single', metric=pearson_correlation)
     # Z = linkage(X, method='single', metric=shortest_path)
-    display_dendrogram(Z)
+
+    # Z = linkage(X, method='complete', metric='euclidean')
+    # Z = linkage(X, method='complete', metric=pearson_correlation)
+    # Z = linkage(X, method='complete', metric=shortest_path)
+
+    # Z = linkage(X, method='average', metric='euclidean')
+    # Z = linkage(X, method='average', metric=pearson_correlation)
+    # Z = linkage(X, method='average', metric=shortest_path)
 
 
     clusters = select_clusters(Z)
@@ -109,6 +116,7 @@ def main():
         nx.draw_circular(g, node_color=colors, with_labels=True)
         plt.savefig("%s.png" % c, format="PNG")
 
+    display_dendrogram(Z)
 
 if __name__ == "__main__":
     main()
