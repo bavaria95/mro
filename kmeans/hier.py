@@ -19,7 +19,8 @@ def display_dendrogram(Z):
         leaf_rotation=90.,
         leaf_font_size=8.
     )
-    plt.show()
+    # plt.show()
+    plt.savefig("dendrogram.jpg" % c, format="JPG")
 
 def pearson_correlation(x, y):
     return abs(pearsonr(x, y)[0])
@@ -91,14 +92,22 @@ def main():
     g = read_graph('datasets/karate.gml')
     # g = read_graph('datasets/football.gml')
     # g = read_graph('datasets/dolphins.gml')
+
     X = nx.adjacency_matrix(g).toarray()
 
-    # Z = linkage(X, method='single', metric='euclidean')
+    Z = linkage(X, method='single', metric='euclidean')
     # Z = linkage(X, method='single', metric=pearson_correlation)
-    Z = linkage(X, method='single', metric=shortest_path)
-    # display_dendrogram(Z)
+    # Z = linkage(X, method='single', metric=shortest_path)
+    display_dendrogram(Z)
 
-    c = select_clusters(Z)
+
+    clusters = select_clusters(Z)
+
+    for c in range(len(clusters)):
+        colors = assign_colors(clusters[c])
+
+        nx.draw_circular(g, node_color=colors, with_labels=True)
+        plt.savefig("%s.png" % c, format="PNG")
 
 
 if __name__ == "__main__":
