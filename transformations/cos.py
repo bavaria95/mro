@@ -34,5 +34,28 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # gen_add_signal()
-    gen_segment_signal()
+    Fs = 2000
+    # t, y = gen_add_signal()
+    t, y = gen_segment_signal()
+
+
+    plt.subplot(2, 1, 1)
+    plt.plot(t, y,'k-')
+    plt.xlabel('time')
+    plt.ylabel('amplitude')
+
+    plt.subplot(2, 1, 2)
+    n = len(y)                       # length of the signal
+    k = np.arange(n)
+    T = n/Fs
+    frq = k/T                        # two sides frequency range
+    freq = frq[range(n/2)]           # one side frequency range
+
+    Y = np.fft.fft(y)/n              # fft computing and normalization
+    Y = Y[range(n/2)]
+
+    plt.plot(freq, abs(Y), 'r-')
+    plt.xlabel('freq (Hz)')
+    plt.ylabel('|Y(freq)|')
+
+    plt.show()
