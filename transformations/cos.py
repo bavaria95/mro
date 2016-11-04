@@ -18,23 +18,21 @@ def gen_add_signal():
     return (t, f)
 
 def gen_segment_signal():
-    n_samples = 20000
-    x = np.linspace(-np.pi, np.pi, n_samples)
+    Fs = 2000
     w = [5, 10, 25, 50, 100]
-    f = np.zeros(x.shape)
+    f = np.zeros(Fs)
     for i in range(5):
-        index_1 = i * (n_samples / 5)
-        index_2 = (i + 1) * (n_samples / 5)
-        f[index_1:index_2] += np.cos(x[index_1:index_2]*w[i])
+        index_1 = i * (Fs / 5)
+        index_2 = (i + 1) * (Fs / 5)
+        t, y = generate_cosine(w[i])
+        f[index_1:index_2] += y[index_1:index_2]
 
-    plt.plot(x, np.fft.fft(f))
-    plt.show()
-    return f
+    return (t, f)
 
 def main():
     pass
 
 if __name__ == "__main__":
     main()
-    gen_add_signal()
-    # gen_segment_signal()
+    # gen_add_signal()
+    gen_segment_signal()
