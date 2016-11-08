@@ -3,6 +3,9 @@ import pywt
 import cv2
 import copy
 
+def diff(A, B):
+    return np.linalg.norm(A - B)
+
 def compress_image(A, wavelet='haar'):
     for i in range(A.shape[0]):
         x = A[i].astype(float)
