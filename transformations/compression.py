@@ -32,7 +32,7 @@ def decompress_image(A, wavelet='haar'):
 
 eps = 5
 
-filename = 'image2'
+filename = 'image1'
 A = cv2.imread('images/%s.png' % filename)[:, :, 0].astype(float)
 initial_nonzeros = np.where(A!=0)[0].shape[0]
 
