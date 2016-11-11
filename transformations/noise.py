@@ -31,11 +31,11 @@ def noisy(noise_typ, image):
       out[coords] = 0
       return out
 
-filename = 'image2'
+filename = 'image4'
 A = cv2.imread('images/%s.png' % filename)[:, :, 0].astype(float)
 
 A_sp = noisy('s&p', A)
 A_g = noisy('gauss', A)
 
-cv2.imwrite('sp.png', A_sp)
-cv2.imwrite('gauss.png', A_g)
+cv2.imwrite('images/%s_sp.png' % filename, A_sp)
+cv2.imwrite('images/%s_gauss.png' % filename, A_g)
