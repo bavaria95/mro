@@ -2,7 +2,6 @@ import numpy as np
 import pywt
 import cv2
 import copy
-import matplotlib.pyplot as plt
 
 def diff(A, B):
     return np.linalg.norm(A - B)
@@ -53,29 +52,45 @@ def decompress_image(A, wavelet='haar'):
 
         A[:, i] = x
 
+eps = 10
+
 filename = 'image2'
 A_orig = cv2.imread('images/%s.png' % filename)[:, :, 0].astype(float)
-initial_nonzeros = np.where(A_orig!=0)[0].shape[0]
+A = np.copy(A_orig)
+initial_nonzeros = np.where(A!=0)[0].shape[0]
+print(A)
 
-e = []
-c = []
-for eps in np.linspace(0, 10, 100):
-    A = np.copy(A_orig)
 
-    compress_image(A, 'haar')
+cv2.imshow('img', A.astype(np.uint8))
+cv2.waitKey(0)
 
-    A[np.where(np.abs(A) < eps)] = 0
+compress_image(A)
+print(A)
 
-    approx_nonzeros = np.where(A!=0)[0].shape[0]
-    c.append(float(initial_nonzeros) / approx_nonzeros)
 
-    decompress_image(A, 'haar')
+cv2.imshow('img', A.astype(np.uint8))
+cv2.waitKey(0)
 
-    e.append(diff(A, A_orig))
-    print(eps)
+A[np.where(np.abs(A) < eps)] = 0
 
-plt.xkcd()
-plt.plot(c, e, '-')
-plt.xlabel('compression')
-plt.ylabel('error')
-plt.show()
+
+cv2.imshow('img', A.astype(np.uint8))
+cv2.waitKey(0)
+
+approx_nonzeros = np.where(A!=0)[0].shape[0]
+
+# print(float(initial_nonzeros) / approx_nonzeros)
+
+decompress_image(A)
+print(A)
+
+print(diff(A, A_orig))
+
+
+cv2.imshow('img', A.astype(np.uint8))
+cv2.waitKey(0)
+
+cv2.imwrite('%s_compressed.png' % filename, A.astype(np.uint8))
+
+# # cv2.imshow('img', A.astype(np.uint8))
+# # cv2.waitKey(0)
