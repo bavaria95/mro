@@ -7,13 +7,13 @@ def denoise(A, wavelet='haar'):
 
     coefs = pywt.wavedec2(A, wavelet)
 
-    threshold = 2*np.sqrt(2*np.log2(A.size))
+    threshold = 3*np.sqrt(2*np.log2(A.size))
     coefs = map(lambda x: pywt.threshold(x, threshold), coefs)
     A = pywt.waverec2(coefs, wavelet)
 
     return A
 
-filename = 'image4_gauss'
+filename = 'image1_sp'
 A = cv2.imread('images/%s.png' % filename)[:, :, 0].astype(float)
 A = denoise(A, 'haar')
 cv2.imwrite('%s_denoised.png' % filename, A)
