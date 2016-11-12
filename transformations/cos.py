@@ -29,11 +29,7 @@ def gen_segment_signal():
 
     return (t, f)
 
-def main():
-    pass
-
 if __name__ == "__main__":
-    main()
     Fs = 2000
     # t, y = gen_add_signal()
     t, y = gen_segment_signal()
