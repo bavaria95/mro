@@ -1,7 +1,6 @@
 import numpy as np
 import pywt
 import cv2
-import copy
 
 def diff(A, B):
     return np.linalg.norm(A - B)
