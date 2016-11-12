@@ -1,5 +1,4 @@
-from numpy import *
-import scipy
+import numpy as np
 import pywt
 import cv2
 
@@ -8,7 +7,7 @@ def denoise(A, wavelet='haar'):
 
     coefs = pywt.wavedec2(A, wavelet)
 
-    threshold = 2*sqrt(2*log2(A.size))
+    threshold = 2*np.sqrt(2*np.log2(A.size))
     coefs = map(lambda x: pywt.threshold(x, threshold), coefs)
     A = pywt.waverec2(coefs, wavelet)
 
