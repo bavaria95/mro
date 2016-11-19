@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import svm, datasets
+from sklearn import svm, datasets, neighbors
 from sklearn.model_selection import train_test_split
 
 iris = datasets.load_iris()
@@ -22,3 +22,10 @@ print("RBF: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
 
 Z = poly_svc.predict(X_test)
 print("Polynomial: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
+
+
+clf = neighbors.KNeighborsClassifier(1, weights='distance')
+clf.fit(X, y)
+
+Z = clf.predict(X_test)
+print("1NN: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
