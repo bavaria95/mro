@@ -1,17 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
-from sklearn import decomposition
-from sklearn import datasets
 from sklearn import svm
 
-iris = datasets.load_iris()
-X = iris.data
-y = iris.target
+def gen_random_sphere(r, R):
+    phi = np.random.random() * 360
+    return ((R - r)*np.cos(phi)*np.random.random() + r*np.cos(phi), (R - r)*np.sin(phi)*np.random.random() + r*np.sin(phi))
 
-pca = decomposition.PCA(n_components=2)
-pca.fit(X)
-X = pca.transform(X)
+X, Y = [], []
+x = np.array([gen_random_sphere(4, 5) for _ in range(1000)])
+plt.plot(x[:, 0], x[:, 1], 'b.')
+X.extend(x)
+Y.extend([0]*1000)
+
+
+x = np.array([gen_random_sphere(1, 2) for _ in range(500)])
+plt.plot(x[:, 0], x[:, 1], 'r.')
+X.extend(x)
+Y.extend([1]*500)
+
+plt.show()
+plt.clf()
+
+X = np.array(X)
+y = np.array(Y)
+
 
 # step size in the mesh
 h = .02
@@ -33,7 +45,7 @@ titles = ['Linear kernel',
           'RBF kernel',
           'Sigmoid kernel']
 
-color_map = {0: (1, 0, 0), 1: (0, 0, 1), 2: (0.8, 0.6, 0)}
+color_map = {0: (1, 0, 0), 1: (0, 0, 1)}
 
 for i, (clf, y_train) in enumerate((lin_svc, poly_svc, rbf_svc, sig_svc)):
     # Plot the decision boundary. For that, we will assign a color to each
