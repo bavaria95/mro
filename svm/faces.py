@@ -1,12 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
 from sklearn.datasets import fetch_lfw_people
 from sklearn.decomposition import PCA
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.model_selection import cross_val_score
+from sklearn import svm
 
 def plot_gallery(images, titles, h, w, n_row=3, n_col=4):
     """Helper function to plot a gallery of portraits"""
@@ -44,17 +41,10 @@ pca = PCA(n_components=n_components, svd_solver='randomized',
 eigenfaces = pca.components_.reshape((n_components, h, w))
 X_pca = pca.transform(X)
 
+X_train, X_test, y_train, y_test = train_test_split(
+    X_pca, y, test_size=0.25)
 
-faces_titles = ["face %d" % i for i in range(X.shape[0])]
+clf = svm.SVC(kernel='rbf').fit(X_train, y_train)
 
-plot_gallery(X, faces_titles, h, w)
-plt.show()
-
-X_res = pca.inverse_transform(X_pca)
-plot_gallery(X_res, faces_titles, h, w)
-plt.show()
-
-X_pca_sc = map(scale_10_features, X_pca)
-X_res_sc = pca.inverse_transform(X_pca_sc)
-plot_gallery(X_res_sc, faces_titles, h, w)
-plt.show()
+Z = clf.predict(X_test)
+print(sum(map(int, Z == y_test))/(float(y_test.shape[0])))
