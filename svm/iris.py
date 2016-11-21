@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm, datasets, neighbors
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 
 iris = datasets.load_iris()
 X = iris.data
@@ -10,22 +10,15 @@ y = iris.target
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
 
 C = 1.0  # SVM regularization parameter
-svc = svm.SVC(kernel='linear', C=C).fit(X_train, y_train)
-rbf_svc = svm.SVC(kernel='rbf', gamma='auto', C=C).fit(X, y)
-poly_svc = svm.SVC(kernel='poly', degree=3, C=C).fit(X, y)
+svc = svm.SVC(kernel='linear', C=C)
+rbf_svc = svm.SVC(kernel='rbf', gamma='auto', C=C)
+poly_svc = svm.SVC(kernel='poly', degree=3, C=C)
+knn = neighbors.KNeighborsClassifier(1, weights='distance')
 
-Z = svc.predict(X_test)
-print("Linear: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
+print("Linear: %s" % np.average(cross_val_score(svc, X, y, cv=5)))
 
-Z = rbf_svc.predict(X_test)
-print("RBF: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
+print("RBF: %s" % np.average(cross_val_score(rbf_svc, X, y, cv=5)))
 
-Z = poly_svc.predict(X_test)
-print("Polynomial: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
+print("Polynomial: %s" % np.average(cross_val_score(poly_svc, X, y, cv=5)))
 
-
-clf = neighbors.KNeighborsClassifier(1, weights='distance')
-clf.fit(X, y)
-
-Z = clf.predict(X_test)
-print("1NN: %s" % (sum(map(int, Z == y_test))/(float(y_test.shape[0]))))
+print("1NN: %s" % np.average(cross_val_score(knn, X, y, cv=5)))
