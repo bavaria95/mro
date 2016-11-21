@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_lfw_people
 from sklearn.decomposition import PCA
 from sklearn import svm
+from sklearn.metrics import classification_report
 
 def plot_gallery(images, titles, h, w, n_row=3, n_col=4):
     """Helper function to plot a gallery of portraits"""
@@ -46,5 +47,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 clf = svm.SVC(kernel='rbf').fit(X_train, y_train)
 
-Z = clf.predict(X_test)
-print(sum(map(int, Z == y_test))/(float(y_test.shape[0])))
+y_pred = clf.predict(X_test)
+
+print(classification_report(y_test, y_pred))
+
